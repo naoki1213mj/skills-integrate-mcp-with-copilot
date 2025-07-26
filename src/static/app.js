@@ -3,23 +3,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  // フィルターUI
+  const filterName = document.getElementById("filter-name");
+  const filterDay = document.getElementById("filter-day");
+  const filterAvailable = document.getElementById("filter-available");
+  const filterBtn = document.getElementById("filter-btn");
+  const filterReset = document.getElementById("filter-reset");
 
   // Function to fetch activities from API
-  async function fetchActivities() {
+  async function fetchActivities(filters = {}) {
     try {
-      const response = await fetch("/activities");
+      // クエリパラメータ生成
+      const params = new URLSearchParams();
+      if (filters.name) params.append("name", filters.name);
+      if (filters.day) params.append("day", filters.day);
+      if (filters.available !== undefined) params.append("available", filters.available);
+      const url = params.toString() ? `/activities?${params}` : "/activities";
+      const response = await fetch(url);
       const activities = await response.json();
 
-      // Clear loading message
+      // Clear loading message & dropdown
       activitiesList.innerHTML = "";
+      activitySelect.innerHTML = "";
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
 
-        const spotsLeft =
-          details.max_participants - details.participants.length;
+        const spotsLeft = details.max_participants - details.participants.length;
 
         // Create participants HTML with delete icons instead of bullet points
         const participantsHTML =
@@ -61,8 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener("click", handleUnregister);
       });
     } catch (error) {
-      activitiesList.innerHTML =
-        "<p>Failed to load activities. Please try again later.</p>";
+      activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
   }
@@ -155,6 +166,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Initialize app
+  // フィルターイベント
+  filterBtn.addEventListener("click", () => {
+    const filters = {
+      name: filterName.value.trim() || undefined,
+      day: filterDay.value || undefined,
+      available: filterAvailable.checked ? true : undefined,
+    };
+    fetchActivities(filters);
+  });
+
+  // リセットイベント
+  filterReset.addEventListener("click", () => {
+    filterName.value = "";
+    filterDay.value = "";
+    filterAvailable.checked = false;
+    fetchActivities();
+  });
+
+  // 初期表示
   fetchActivities();
 });

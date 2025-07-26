@@ -25,6 +25,23 @@
         <h3>Sign Up for an Activity</h3>
         <form id="signup-form">
           <div class="form-group">
+            <div id="filters" class="filters">
+              <label for="filter-name">活動名:</label>
+              <input type="text" id="filter-name" placeholder="例: Chess" />
+              <label for="filter-day">曜日:</label>
+              <select id="filter-day">
+                <option value="">すべて</option>
+                <option value="monday">Monday</option>
+                <option value="tuesday">Tuesday</option>
+                <option value="wednesday">Wednesday</option>
+                <option value="thursday">Thursday</option>
+                <option value="friday">Friday</option>
+              </select>
+              <label for="filter-available">空きあり:</label>
+              <input type="checkbox" id="filter-available" />
+              <button id="filter-btn" type="button">絞り込み</button>
+              <button id="filter-reset" type="button" style="margin-left:8px;">リセット</button>
+            </div>
             <label for="email">Student Email:</label>
             <input type="email" id="email" required placeholder="your-email@mergington.edu" />
           </div>
