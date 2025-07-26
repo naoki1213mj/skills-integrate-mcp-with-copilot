@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const filters = {
       name: filterName.value.trim() || undefined,
       day: filterDay.value || undefined,
-      available: filterAvailable.checked ? true : undefined,
+      available: filterAvailable.checked || undefined,
     };
     fetchActivities(filters);
   });
